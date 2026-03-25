@@ -9,33 +9,7 @@
     <meta name="description" content="ebb.rocks" />
     <link rel="icon" href="img/weavermask.png" type="image/png" sizes="any" />
     <link rel="apple-touch-icon" href="img/weavermask.png" />
-    <style>
-      body {
-        margin: 0;
-        min-height: 100vh;
-        display: grid;
-        place-items: center;
-        position: relative;
-        overflow: hidden;
-      }
-
-      .bg-video {
-        position: fixed;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        z-index: 0;
-        pointer-events: none;
-        user-select: none;
-        -webkit-user-drag: none;
-      }
-
-      .content-img {
-        position: relative;
-        z-index: 1;
-      }
-    </style>
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <video
@@ -47,10 +21,9 @@
       loop
       playsinline
       preload="auto"
+      fetchpriority="high"
       aria-hidden="true"
       tabindex="-1"
-      role="presentation"
-      draggable="false"
     ></video>
     <img
       class="content-img"
@@ -59,27 +32,32 @@
       width="287"
       height="305"
       decoding="async"
+      fetchpriority="low"
+      draggable="false"
     />
     <script>
-      // Autoplay can occasionally pause (e.g. tab switching/buffering).
-      // Keep it running continuously, but never make it interactive.
       const v = document.getElementById("bgVideo");
-      const ensurePlaying = async () => {
-        if (!v) return;
-        try {
-          if (v.paused || v.ended) await v.play();
-        } catch {
-          // Ignore autoplay/play errors (browser may still block in some cases).
-        }
+      if (!v) return;
+
+      let lastAttemptMs = 0;
+      const attemptPlay = () => {
+        const now = Date.now();
+        if (now - lastAttemptMs < 400) return;
+        lastAttemptMs = now;
+
+        if (!v.paused && !v.ended) return;
+        v.play().catch(() => {});
       };
 
-      v?.addEventListener("pause", ensurePlaying);
-      v?.addEventListener("ended", ensurePlaying);
+      v.addEventListener("loadedmetadata", attemptPlay, { once: true });
+      v.addEventListener("canplay", attemptPlay, { once: true });
+      v.addEventListener("pause", attemptPlay);
+      v.addEventListener("ended", attemptPlay);
       document.addEventListener("visibilitychange", () => {
-        if (document.visibilityState === "visible") ensurePlaying();
+        if (document.visibilityState === "visible") attemptPlay();
       });
 
-      ensurePlaying();
+      attemptPlay();
     </script>
   </body>
 </html>
