@@ -7,57 +7,11 @@
     <meta name="theme-color" content="#0f172a" />
     <title>ebb.rocks</title>
     <meta name="description" content="ebb.rocks" />
-    <link rel="icon" href="img/weavermask.png" type="image/png" sizes="any" />
-    <link rel="apple-touch-icon" href="img/weavermask.png" />
-    <link rel="stylesheet" href="style.css" />
+    <link rel="icon" href="/img/weavermask.png" type="image/png" sizes="any" />
+    <link rel="apple-touch-icon" href="/img/weavermask.png" />
   </head>
   <body>
-    <video
-      id="bgVideo"
-      class="bg-video"
-      src="img/oceanloop.mp4"
-      autoplay
-      muted
-      loop
-      playsinline
-      preload="auto"
-      fetchpriority="high"
-      aria-hidden="true"
-      tabindex="-1"
-    ></video>
-    <img
-      class="content-img"
-      src="img/weavermask.png"
-      alt="Weaver mask"
-      width="287"
-      height="305"
-      decoding="async"
-      fetchpriority="low"
-      draggable="false"
-    />
-    <script>
-      const v = document.getElementById("bgVideo");
-      if (!v) return;
-
-      let lastAttemptMs = 0;
-      const attemptPlay = () => {
-        const now = Date.now();
-        if (now - lastAttemptMs < 400) return;
-        lastAttemptMs = now;
-
-        if (!v.paused && !v.ended) return;
-        v.play().catch(() => {});
-      };
-
-      v.addEventListener("loadedmetadata", attemptPlay, { once: true });
-      v.addEventListener("canplay", attemptPlay, { once: true });
-      v.addEventListener("pause", attemptPlay);
-      v.addEventListener("ended", attemptPlay);
-      document.addEventListener("visibilitychange", () => {
-        if (document.visibilityState === "visible") attemptPlay();
-      });
-
-      attemptPlay();
-    </script>
+    <h1>test</h1>
+    <script type="module" src="/src/main.js"></script>
   </body>
 </html>
