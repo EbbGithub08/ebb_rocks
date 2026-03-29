@@ -21,16 +21,19 @@ function hideLoadingOnce() {
 }
 
 if (video) {
-  video.addEventListener("canplaythrough", () => hideLoadingOnce(), { once: true });
-  video.addEventListener("error", () => hideLoadingOnce(), { once: true });
+  // Hide as soon as the first frame exists (`loadeddata`), or when playback can start (`canplay`).
+  // We intentionally avoid `canplaythrough` — it waits for full-file buffer and keeps the overlay up much longer.
   video.addEventListener("loadeddata", () => hideLoadingOnce(), { once: true });
+  video.addEventListener("canplay", () => hideLoadingOnce(), { once: true });
+  video.addEventListener("error", () => hideLoadingOnce(), { once: true });
 
   // Deferred module scripts run after parse; the video may already have errored or buffered.
-  if (video.error != null || video.readyState >= 4) {
+  const readyEnough = () => video.readyState >= 3; // HAVE_FUTURE_DATA — enough to show/play, not full buffer
+  if (video.error != null || readyEnough()) {
     hideLoadingOnce();
   } else {
     queueMicrotask(() => {
-      if (video.error != null || video.readyState >= 4) hideLoadingOnce();
+      if (video.error != null || readyEnough()) hideLoadingOnce();
     });
   }
 
