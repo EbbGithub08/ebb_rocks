@@ -1,0 +1,19 @@
+/* Page shell — grid/flex for header / main / footer. */
+.layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.site-main {
+  flex: 1;
+  width: 100%;
+  max-width: 72rem;
+  margin-inline: auto;
+  padding: var(--space-md);
+}
+
+.site-header,
+.site-footer {
+  padding: var(--space-md);
+}

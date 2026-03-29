@@ -1,0 +1,24 @@
+/* Design tokens — change colors, type scale, and spacing here. */
+:root {
+  color-scheme: light dark;
+
+  --color-bg: light-dark(#fafafa, #0f172a);
+  --color-surface: light-dark(#ffffff, #1e293b);
+  --color-text: light-dark(#0f172a, #f1f5f9);
+  --color-text-muted: light-dark(#64748b, #94a3b8);
+  --color-accent: light-dark(#2563eb, #60a5fa);
+
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: ui-monospace, "Cascadia Code", "Source Code Pro", monospace;
+
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.06);
+}

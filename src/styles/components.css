@@ -1,0 +1,11 @@
+/* Reusable UI blocks (cards, nav, buttons). Add rules as you build. */
+
+.site-header {
+  border-bottom: 1px solid light-dark(rgb(0 0 0 / 0.08), rgb(255 255 255 / 0.08));
+}
+
+.site-footer {
+  border-top: 1px solid light-dark(rgb(0 0 0 / 0.08), rgb(255 255 255 / 0.08));
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+}
