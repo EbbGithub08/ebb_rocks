@@ -4,18 +4,22 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="color-scheme" content="light dark" />
-    <meta name="theme-color" content="#0f172a" />
+    <meta name="theme-color" content="#0a1628" />
     <title>ebb.rocks</title>
     <meta name="description" content="ebb.rocks" />
     <link rel="icon" href="/img/weavermask.png" type="image/png" sizes="any" />
     <link rel="apple-touch-icon" href="/img/weavermask.png" />
-    <!-- New Vite pages: duplicate index.html from the repo root, or copy this head and point the script to your entry. -->
   </head>
   <body>
+    <video id="bg-video" class="bg-video" autoplay muted loop playsinline preload="auto">
+      <source src="/video/ocean-loop.mp4" type="video/mp4" />
+    </video>
+    <div id="loading" class="loading-overlay" aria-busy="true" aria-label="Loading video">
+      <div class="loading-cog" aria-hidden="true">⚙</div>
+      <p class="loading-text">Loading…</p>
+    </div>
     <div id="app" class="layout">
-      <header class="site-header"></header>
-      <main class="site-main"></main>
-      <footer class="site-footer"></footer>
+      <main id="main" class="site-main"></main>
     </div>
   </body>
 </html>

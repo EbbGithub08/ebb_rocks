@@ -15,14 +15,14 @@ body {
   font-size: 1rem;
   line-height: 1.5;
   color: var(--color-text);
-  background-color: var(--color-bg);
+  background-color: var(--color-ocean-loading);
 }
 
 .skip-link {
   position: absolute;
   left: var(--space-md);
   top: var(--space-md);
-  z-index: 10;
+  z-index: 3;
   padding: var(--space-sm) var(--space-md);
   background: var(--color-surface);
   color: var(--color-text);
@@ -41,7 +41,7 @@ body {
 
 img,
 picture,
-video {
+video:not(.bg-video) {
   max-width: 100%;
   height: auto;
 }
