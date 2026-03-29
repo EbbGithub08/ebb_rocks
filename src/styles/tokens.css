@@ -6,7 +6,7 @@
   --color-text: light-dark(#0f172a, #f1f5f9);
   --color-text-muted: light-dark(#64748b, #94a3b8);
   --color-accent: light-dark(#2563eb, #60a5fa);
-  --color-ocean-loading: #0a1628;
+  --coloroceanloop: #0a1628;
 
   --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --font-mono: ui-monospace, "Cascadia Code", "Source Code Pro", monospace;
