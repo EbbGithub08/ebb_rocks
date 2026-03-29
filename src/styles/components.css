@@ -8,7 +8,7 @@
 }
 
 .pda-showcase {
-  width: min(90vw, 28rem);
-  max-width: 250%;
+  width: min(90vw, 60rem);
+  max-width: 100%;
   height: auto;
 }
