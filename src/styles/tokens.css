@@ -6,7 +6,8 @@
   --color-text: light-dark(#0f172a, #f1f5f9);
   --color-text-muted: light-dark(#64748b, #94a3b8);
   --color-accent: light-dark(#2563eb, #60a5fa);
-  --coloroceanloop: #0a1628;
+  /* Solid “rest of site” under the hero — match oceanloop.mp4 if needed. */
+  --coloroceanloop: #000a4e;
 
   --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --font-mono: ui-monospace, "Cascadia Code", "Source Code Pro", monospace;

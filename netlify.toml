@@ -1,3 +1,9 @@
 [build]
   command = "npm run build"
   publish = "dist"
+
+# Optional: pretty URL for the admin entry (static build only; API lives elsewhere).
+[[redirects]]
+  from = "/admin"
+  to = "/admin.html"
+  status = 200

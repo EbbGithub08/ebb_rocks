@@ -1,0 +1,131 @@
+/* Homepage content regions — add prose, grids, and media inside each section. */
+.content-section {
+  width: min(100%, var(--content-max, 72rem));
+  margin-inline: auto;
+  padding-block: var(--space-xl);
+  padding-inline: var(--space-md);
+}
+
+/* Top of site: one block — full-frame video + PDA on top (same layer stack, scrolls away together). */
+.site-hero {
+  position: relative;
+  width: 100%;
+  max-width: none;
+  margin-inline: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  overflow: hidden;
+  padding-top: max(var(--space-md), env(safe-area-inset-top, 0px));
+  padding-bottom: var(--space-xl);
+  isolation: isolate;
+}
+
+.site-hero__media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.site-hero__video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+  pointer-events: none;
+}
+
+.site-hero__content {
+  position: relative;
+  z-index: 1;
+  width: min(100%, var(--content-max, 72rem));
+  margin-inline: auto;
+  padding-inline: var(--space-md);
+}
+
+/* “Page 2” — below the hero, above comments (see <section id="page-2">). */
+#page-2.content-section {
+  background-color: var(--coloroceanloop);
+  min-height: min(55vh, 32rem);
+}
+
+.page-2__title {
+  margin: 0 0 var(--space-md);
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.page-2__prose {
+  margin: 0;
+  max-width: 42rem;
+  color: var(--color-text-muted);
+  line-height: 1.6;
+}
+
+.page-2__prose + .page-2__prose {
+  margin-top: var(--space-md);
+}
+
+#comments.content-section {
+  background-color: var(--coloroceanloop);
+  min-height: min(70vh, 36rem);
+  border-top: 1px solid light-dark(rgb(0 0 0 / 0.08), rgb(255 255 255 / 0.1));
+}
+
+.content-section--comments {
+  min-height: 8rem;
+}
+
+.comments-section__header {
+  margin-bottom: var(--space-md);
+}
+
+.comments-section__title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.comments-thread {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  min-height: 2rem;
+}
+
+.comments-section__placeholder {
+  margin: var(--space-md) 0 0;
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+}
+
+/* Admin shell (separate entry); keep visually aligned with the main site tokens. */
+.admin-layout {
+  min-height: 100vh;
+  padding: var(--space-lg);
+  color: var(--color-text);
+  background-color: var(--coloroceanloop);
+}
+
+.admin-header {
+  max-width: 48rem;
+  margin-bottom: var(--space-xl);
+}
+
+.admin-title {
+  margin: 0 0 var(--space-sm);
+  font-size: 1.5rem;
+}
+
+.admin-lead {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.9375rem;
+}
+
+.admin-main {
+  max-width: 64rem;
+}

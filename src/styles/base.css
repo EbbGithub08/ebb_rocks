@@ -6,6 +6,7 @@
 
 html {
   -webkit-text-size-adjust: 100%;
+  background-color: var(--coloroceanloop);
 }
 
 body {
@@ -18,7 +19,7 @@ body {
 
 img,
 picture,
-video:not(.bg-video) {
+video:not(.site-hero__video) {
   max-width: 100%;
   height: auto;
 }

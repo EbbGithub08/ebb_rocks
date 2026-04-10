@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="color-scheme" content="light dark" />
-    <meta name="theme-color" content="#0a1628" />
+    <meta name="theme-color" content="#000a4e" />
     <title>ebb.rocks</title>
     <meta name="description" content="ebb.rocks" />
     <link rel="icon" href="/img/weavermask.png" type="image/png" sizes="any" />
@@ -12,26 +12,52 @@
     <link rel="preload" href="/video/oceanloop.mp4" as="video" type="video/mp4" />
   </head>
   <body>
-    <video
-      id="bg-video"
-      class="bg-video"
-      autoplay
-      muted
-      loop
-      playsinline
-      preload="auto"
-    >
-      <source src="/video/oceanloop.mp4" type="video/mp4" />
-    </video>
-
     <div id="loading" class="loading-overlay" aria-busy="true" aria-label="Loading video">
       <div class="loading-cog" aria-hidden="true">⚙</div>
       <p class="loading-text">Loading…</p>
     </div>
 
     <div id="app" class="layout">
-      <main id="main" class="site-main site-main--center" role="main">
-        <img class="pda-showcase" src="/img/PDA2.png" alt="PDA" />
+      <main id="main" class="site-main" role="main">
+        <section id="intro" class="site-hero" aria-label="Introduction">
+          <div class="site-hero__media" aria-hidden="true">
+            <video
+              id="bg-video"
+              class="site-hero__video"
+              autoplay
+              muted
+              loop
+              playsinline
+              preload="auto"
+            >
+              <source src="/video/oceanloop.mp4" type="video/mp4" />
+            </video>
+          </div>
+          <div class="site-hero__content intro-hero">
+            <img class="pda-showcase" src="/img/PDA2.png" alt="PDA" />
+          </div>
+        </section>
+
+        <section id="page-2" class="content-section content-section--page-2" aria-label="Main content">
+          <h2 class="page-2__title">placeholder</h2>
+          <p class="page-2__prose">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et
+            dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+          </p>
+        </section>
+
+        <section
+          class="content-section content-section--comments comments-section"
+          id="comments"
+          aria-label="Comments"
+          data-comments-root
+        >
+          <header class="comments-section__header">
+            <h2 class="comments-section__title">Comments</h2>
+          </header>
+          <ul class="comments-thread" id="comments-thread" aria-label="Comments list"></ul>
+          <p class="comments-section__placeholder">Sign-in and posting will be wired up later.</p>
+        </section>
       </main>
     </div>
 
