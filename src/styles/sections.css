@@ -124,6 +124,63 @@
   color: var(--color-text-muted);
 }
 
+.auth-panel {
+  margin-bottom: var(--space-md);
+  width: min(100%, 32rem);
+}
+
+.auth-panel__db-warning {
+  margin: 0 0 var(--space-sm);
+  width: min(100%, 32rem);
+  padding: 0.625rem 0.75rem;
+  border: 1px solid rgb(255 0 0 / 0.35);
+  background: rgb(255 0 0 / 0.08);
+  color: light-dark(rgb(108 0 0), rgb(255 188 188));
+  font-size: 0.875rem;
+}
+
+.auth-panel__status {
+  margin: 0 0 var(--space-sm);
+  color: var(--color-text-muted);
+  font-size: 0.9375rem;
+}
+
+.auth-panel__form {
+  display: grid;
+  gap: var(--space-sm);
+}
+
+.auth-panel__field {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.auth-panel__field > span {
+  font-size: 0.875rem;
+}
+
+.auth-panel__field > input {
+  width: 100%;
+  padding: 0.5rem 0.625rem;
+  border: 1px solid light-dark(rgb(0 0 0 / 0.2), rgb(255 255 255 / 0.3));
+  background: light-dark(rgb(255 255 255 / 0.85), rgb(12 18 70 / 0.75));
+  color: inherit;
+}
+
+.auth-panel__actions {
+  display: flex;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+}
+
+.auth-panel__actions button {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid light-dark(rgb(0 0 0 / 0.2), rgb(255 255 255 / 0.3));
+  background: light-dark(rgb(255 255 255 / 0.9), rgb(8 12 56 / 0.8));
+  color: inherit;
+  cursor: pointer;
+}
+
 /* Admin shell (separate entry); keep visually aligned with the main site tokens. */
 .admin-layout {
   min-height: 100vh;

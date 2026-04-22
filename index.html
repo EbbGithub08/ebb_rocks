@@ -55,8 +55,30 @@
           <header class="comments-section__header">
             <h2 class="comments-section__title">Comments</h2>
           </header>
+          <p class="auth-panel__db-warning" data-db-warning hidden>
+            Login is unavailable right now because the database is not reachable. If you are off school Wi-Fi, connect to
+            VPN or use the SSH tunnel.
+          </p>
+          <div class="auth-panel" data-auth-panel>
+            <p class="auth-panel__status" data-auth-status>Checking login status...</p>
+            <form class="auth-panel__form" data-auth-form>
+              <label class="auth-panel__field">
+                <span>Email</span>
+                <input type="email" name="email" autocomplete="email" required />
+              </label>
+              <label class="auth-panel__field">
+                <span>Password</span>
+                <input type="password" name="password" autocomplete="current-password" minlength="8" required />
+              </label>
+              <div class="auth-panel__actions">
+                <button type="submit" data-auth-action="login">Login</button>
+                <button type="button" data-auth-action="register">Register</button>
+                <button type="button" data-auth-action="logout">Logout</button>
+              </div>
+            </form>
+          </div>
           <ul class="comments-thread" id="comments-thread" aria-label="Comments list"></ul>
-          <p class="comments-section__placeholder">Sign-in and posting will be wired up later.</p>
+          <p class="comments-section__placeholder">Login is now wired. Comment posting can be added next.</p>
         </section>
       </main>
     </div>

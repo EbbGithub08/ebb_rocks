@@ -1,4 +1,5 @@
 import express from "express";
+import cookieParser from "cookie-parser";
 import path from "path";
 import { fileURLToPath } from "url";
 import { apiRouter } from "./routes/api/index.js";
@@ -11,6 +12,7 @@ export function createApp() {
 
   app.disable("x-powered-by");
   app.use(express.json());
+  app.use(cookieParser());
 
   app.use("/api", apiRouter);
   app.use("/api", (_req, res) => {
