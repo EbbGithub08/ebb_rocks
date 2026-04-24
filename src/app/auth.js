@@ -82,20 +82,12 @@ export function initAuthPanel() {
     return;
   }
 
-  async function refreshCurrentUser() {
+  async function getCurrentUser() {
     const { data, error } = await supabase.auth.getSession();
     if (error) {
-      setDbWarningVisible(true, error.message || "Could not contact auth service.");
-      setStatus("Not logged in");
-      return;
+      throw new Error(error.message || "Could not contact auth service.");
     }
-    const user = data?.session?.user ?? null;
-    setDbWarningVisible(false);
-    if (!user) {
-      setStatus("Not logged in");
-      return;
-    }
-    setStatus(`Logged in as ${user.email || "your account"}`);
+    return data?.session?.user ?? null;
   }
 
   async function handleAuth(action) {
@@ -150,37 +142,41 @@ export function initAuthPanel() {
       setStatus("Please wait...");
       return;
     }
+    beginAuthOperation();
     try {
-      const { data } = await supabase.auth.getSession();
-      if (!data?.session?.user) {
+      const user = await withTimeout(getCurrentUser(), 8000);
+      if (!user) {
         setStatus("Already logged out");
         return;
       }
-      beginAuthOperation();
-      setStatus("Not logged in");
       const { error } = await withTimeout(supabase.auth.signOut({ scope: "local" }), 8000);
       if (error) {
         setStatus(error.message || "Logout failed");
+      } else {
+        setStatus("Not logged in");
       }
     } catch (error) {
-      setStatus("Logout failed");
+      setStatus(error.message || "Logout failed");
     } finally {
-      if (authInFlight) {
-        endAuthOperation();
-      }
+      endAuthOperation();
     }
   });
 
   supabase.auth.onAuthStateChange((_event, session) => {
-    setDbWarningVisible(false);
     const user = session?.user ?? null;
-    if (!user) {
-      setStatus("Not logged in");
-      return;
-    }
-    setStatus(`Logged in as ${user.email || "your account"}`);
+    setDbWarningVisible(false);
+    setStatus(user ? `Logged in as ${user.email || "your account"}` : "Not logged in");
   });
 
-  setStatus("Checking login status...");
-  refreshCurrentUser().catch(() => setStatus("Not logged in"));
+  // Remove auto-login behavior: always start as logged out on page load.
+  beginAuthOperation();
+  setStatus("Not logged in");
+  withTimeout(supabase.auth.signOut({ scope: "local" }), 8000)
+    .catch(() => {
+      setDbWarningVisible(true, "Could not clear previous session. Try refreshing.");
+      setStatus("Not logged in");
+    })
+    .finally(() => {
+      endAuthOperation();
+    });
 }
