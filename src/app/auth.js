@@ -16,6 +16,7 @@ export function initAuthPanel() {
     (button) => button instanceof HTMLButtonElement,
   );
   let authInFlight = false;
+  let authLockTimerId = null;
 
   if (!(emailInput instanceof HTMLInputElement) || !(passwordInput instanceof HTMLInputElement)) {
     return;
@@ -28,6 +29,30 @@ export function initAuthPanel() {
   function setAuthControlsDisabled(disabled) {
     for (const button of authButtons) {
       button.disabled = disabled;
+    }
+  }
+
+  function beginAuthOperation() {
+    authInFlight = true;
+    setAuthControlsDisabled(true);
+    if (authLockTimerId !== null) {
+      window.clearTimeout(authLockTimerId);
+    }
+    // Prevent permanent UI lock if provider calls hang.
+    authLockTimerId = window.setTimeout(() => {
+      authInFlight = false;
+      setAuthControlsDisabled(false);
+      setStatus("Auth request took too long. Please try again.");
+      authLockTimerId = null;
+    }, 20000);
+  }
+
+  function endAuthOperation() {
+    authInFlight = false;
+    setAuthControlsDisabled(false);
+    if (authLockTimerId !== null) {
+      window.clearTimeout(authLockTimerId);
+      authLockTimerId = null;
     }
   }
 
@@ -82,45 +107,28 @@ export function initAuthPanel() {
       return;
     }
 
-    authInFlight = true;
-    setAuthControlsDisabled(true);
+    beginAuthOperation();
     setStatus("Working...");
     try {
-      const response = await withTimeout(
-        action === "register"
-          ? supabase.auth.signUp({ email, password })
-          : supabase.auth.signInWithPassword({ email, password }),
-        15000,
-      );
-
-      if (response.error) {
-        throw new Error(response.error.message || "Authentication failed");
-      }
-
-      const session = response.data?.session ?? null;
-      const user = response.data?.user ?? null;
-
       if (action === "register") {
-        passwordInput.value = "";
-        if (!session) {
-          setStatus("Account created. Check your email to confirm before logging in.");
-          return;
+        const signUp = await withTimeout(supabase.auth.signUp({ email, password }), 15000);
+        if (signUp.error) {
+          throw new Error(signUp.error.message || "Registration failed");
         }
-        setStatus(`Logged in as ${user?.email || email}`);
-        return;
       }
 
-      if (!session || !user) {
-        throw new Error("Login did not create a session. Check email confirmation and try again.");
+      const login = await withTimeout(supabase.auth.signInWithPassword({ email, password }), 15000);
+      if (login.error) {
+        throw new Error(login.error.message || "Login failed");
       }
 
-      setStatus(`Logged in as ${user.email || email}`);
+      const loggedInEmail = login.data?.user?.email || email;
+      setStatus(`Logged in as ${loggedInEmail}`);
       passwordInput.value = "";
     } catch (error) {
-      setStatus(error.message || "Login failed");
+      setStatus(error.message || "Authentication failed");
     } finally {
-      authInFlight = false;
-      setAuthControlsDisabled(false);
+      endAuthOperation();
     }
   }
 
@@ -142,21 +150,24 @@ export function initAuthPanel() {
       setStatus("Please wait...");
       return;
     }
-    authInFlight = true;
-    setAuthControlsDisabled(true);
-    setStatus("Working...");
     try {
-      const { error } = await supabase.auth.signOut({ scope: "local" });
+      const { data } = await supabase.auth.getSession();
+      if (!data?.session?.user) {
+        setStatus("Already logged out");
+        return;
+      }
+      beginAuthOperation();
+      setStatus("Not logged in");
+      const { error } = await withTimeout(supabase.auth.signOut({ scope: "local" }), 8000);
       if (error) {
         setStatus(error.message || "Logout failed");
-      } else {
-        setStatus("Not logged in");
       }
     } catch (error) {
-      setStatus(error.message || "Logout failed");
+      setStatus("Logout failed");
     } finally {
-      authInFlight = false;
-      setAuthControlsDisabled(false);
+      if (authInFlight) {
+        endAuthOperation();
+      }
     }
   });
 
