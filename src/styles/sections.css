@@ -116,12 +116,96 @@
   margin: 0;
   padding: 0;
   min-height: 2rem;
+  display: grid;
+  gap: var(--space-sm);
 }
 
 .comments-section__placeholder {
   margin: var(--space-md) 0 0;
   font-size: 0.875rem;
   color: var(--color-text-muted);
+}
+
+.comments-form {
+  margin: 0 0 var(--space-md);
+  width: min(100%, 40rem);
+  display: grid;
+  gap: var(--space-sm);
+}
+
+.comments-form__field {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.comments-form__field > span {
+  font-size: 0.875rem;
+}
+
+.comments-form__field textarea {
+  width: 100%;
+  resize: vertical;
+  min-height: 7rem;
+  padding: 0.6rem 0.7rem;
+  border: 1px solid light-dark(rgb(0 0 0 / 0.2), rgb(255 255 255 / 0.3));
+  background: light-dark(rgb(255 255 255 / 0.85), rgb(12 18 70 / 0.75));
+  color: inherit;
+}
+
+.comments-form__actions button {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid light-dark(rgb(0 0 0 / 0.2), rgb(255 255 255 / 0.3));
+  background: light-dark(rgb(255 255 255 / 0.9), rgb(8 12 56 / 0.8));
+  color: inherit;
+  cursor: pointer;
+}
+
+.comments-form__status {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+}
+
+.comment-item {
+  border: 1px solid light-dark(rgb(0 0 0 / 0.1), rgb(255 255 255 / 0.15));
+  background: light-dark(rgb(255 255 255 / 0.55), rgb(8 12 56 / 0.45));
+  padding: var(--space-sm);
+}
+
+.comment-item--empty {
+  color: var(--color-text-muted);
+}
+
+.comment-item__header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-bottom: 0.35rem;
+}
+
+.comment-item__name {
+  margin: 0;
+  font-weight: 600;
+}
+
+.comment-item__meta {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+.comment-item__body {
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+.comment-item__delete {
+  margin-left: auto;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid rgb(255 0 0 / 0.35);
+  background: rgb(255 0 0 / 0.08);
+  color: inherit;
+  cursor: pointer;
 }
 
 .auth-panel {
@@ -181,30 +265,3 @@
   cursor: pointer;
 }
 
-/* Admin shell (separate entry); keep visually aligned with the main site tokens. */
-.admin-layout {
-  min-height: 100vh;
-  padding: var(--space-lg);
-  color: var(--color-text);
-  background-color: var(--coloroceanloop);
-}
-
-.admin-header {
-  max-width: 48rem;
-  margin-bottom: var(--space-xl);
-}
-
-.admin-title {
-  margin: 0 0 var(--space-sm);
-  font-size: 1.5rem;
-}
-
-.admin-lead {
-  margin: 0;
-  color: var(--color-text-muted);
-  font-size: 0.9375rem;
-}
-
-.admin-main {
-  max-width: 64rem;
-}

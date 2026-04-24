@@ -76,8 +76,23 @@
               </div>
             </form>
           </div>
+          <form class="comments-form" data-comments-form>
+            <label class="comments-form__field">
+              <span>Add a comment</span>
+              <textarea
+                name="comment"
+                rows="4"
+                maxlength="2000"
+                placeholder="Write your message here..."
+                required
+              ></textarea>
+            </label>
+            <div class="comments-form__actions">
+              <button type="submit">Post comment</button>
+            </div>
+            <p class="comments-form__status" data-comments-status>Login to post a comment.</p>
+          </form>
           <ul class="comments-thread" id="comments-thread" aria-label="Comments list"></ul>
-          <p class="comments-section__placeholder">Login is now wired. Comment posting can be added next.</p>
         </section>
       </main>
     </div>
