@@ -126,8 +126,8 @@ export function initComments() {
       syncComposerState();
       return;
     }
-    const { data } = await supabase.auth.getUser();
-    currentUser = data?.user ?? null;
+    const { data } = await supabase.auth.getSession();
+    currentUser = data?.session?.user ?? null;
     syncComposerState();
   }
 

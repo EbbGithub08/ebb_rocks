@@ -58,13 +58,22 @@ export function initAuthPanel() {
   }
 
   async function refreshCurrentUser() {
-    setDbWarningVisible(false);
-    const { data, error } = await supabase.auth.getUser();
-    if (error || !data.user) {
-      setStatus("Not logged in");
-      return;
+    try {
+      const { data, error } = await withTimeout(supabase.auth.getSession(), 8000);
+      if (error) {
+        throw new Error(error.message || "Failed to read auth session");
+      }
+      const user = data?.session?.user ?? null;
+      setDbWarningVisible(false);
+      if (!user) {
+        setStatus("Not logged in");
+        return;
+      }
+      setStatus(`Logged in as ${user.email || "your account"}`);
+    } catch (error) {
+      setDbWarningVisible(true, "Auth service is not responding right now. Try again in a moment.");
+      setStatus(error.message || "Could not check login status");
     }
-    setStatus(`Logged in as ${data.user.email}`);
   }
 
   async function handleAuth(action) {
@@ -151,9 +160,16 @@ export function initAuthPanel() {
     }
   });
 
-  supabase.auth.onAuthStateChange(async () => {
-    await refreshCurrentUser();
+  supabase.auth.onAuthStateChange((_event, session) => {
+    setDbWarningVisible(false);
+    const user = session?.user ?? null;
+    if (!user) {
+      setStatus("Not logged in");
+      return;
+    }
+    setStatus(`Logged in as ${user.email || "your account"}`);
   });
 
+  setStatus("Checking login status...");
   refreshCurrentUser().catch(() => setStatus("Not logged in"));
 }
