@@ -2,6 +2,10 @@ import { supabase } from "./supabase.js";
 
 const ADMIN_EMAIL = "ebbe.gaston.zelow@gmail.com";
 
+function normalizeEmail(value) {
+  return (value || "").trim().toLowerCase();
+}
+
 function displayNameFromEmail(email) {
   if (!email) return "Unknown user";
   return email.split("@")[0];
@@ -43,7 +47,7 @@ export function initComments() {
   }
 
   function isAdmin(user) {
-    return user?.email?.toLowerCase() === ADMIN_EMAIL;
+    return normalizeEmail(user?.email) === normalizeEmail(ADMIN_EMAIL);
   }
 
   function canPost() {
@@ -101,9 +105,13 @@ export function initComments() {
         deleteBtn.className = "comment-item__delete";
         deleteBtn.textContent = "Delete";
         deleteBtn.addEventListener("click", async () => {
+          if (!isAdmin(currentUser)) {
+            setStatus("Only the admin account can delete comments.");
+            return;
+          }
           const { error } = await supabase.from("comments").delete().eq("id", item.id);
           if (error) {
-            setStatus(error.message || "Delete failed");
+            setStatus(error.message || "Delete failed. Check Supabase RLS delete policy for the admin user.");
             return;
           }
           setStatus("Comment deleted.");
