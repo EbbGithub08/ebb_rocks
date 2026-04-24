@@ -12,6 +12,10 @@ export function initAuthPanel() {
   const loginButton = form.querySelector('[data-auth-action="login"]');
   const registerButton = form.querySelector('[data-auth-action="register"]');
   const logoutButton = form.querySelector('[data-auth-action="logout"]');
+  const authButtons = [loginButton, registerButton, logoutButton].filter(
+    (button) => button instanceof HTMLButtonElement,
+  );
+  let authInFlight = false;
 
   if (!(emailInput instanceof HTMLInputElement) || !(passwordInput instanceof HTMLInputElement)) {
     return;
@@ -19,6 +23,26 @@ export function initAuthPanel() {
 
   function setStatus(message) {
     statusNode.textContent = message;
+  }
+
+  function setAuthControlsDisabled(disabled) {
+    for (const button of authButtons) {
+      button.disabled = disabled;
+    }
+  }
+
+  async function withTimeout(promise, timeoutMs) {
+    let timeoutId;
+    const timeoutPromise = new Promise((_, reject) => {
+      timeoutId = window.setTimeout(() => {
+        reject(new Error("Auth request timed out. Check connection and try again."));
+      }, timeoutMs);
+    });
+    try {
+      return await Promise.race([promise, timeoutPromise]);
+    } finally {
+      window.clearTimeout(timeoutId);
+    }
   }
 
   function setDbWarningVisible(visible, message = "Login backend is unavailable right now.") {
@@ -44,6 +68,7 @@ export function initAuthPanel() {
   }
 
   async function handleAuth(action) {
+    if (authInFlight) return;
     const email = emailInput.value.trim();
     const password = passwordInput.value;
     if (!email || !password) {
@@ -51,12 +76,16 @@ export function initAuthPanel() {
       return;
     }
 
+    authInFlight = true;
+    setAuthControlsDisabled(true);
     setStatus("Working...");
     try {
-      const response =
+      const response = await withTimeout(
         action === "register"
-          ? await supabase.auth.signUp({ email, password })
-          : await supabase.auth.signInWithPassword({ email, password });
+          ? supabase.auth.signUp({ email, password })
+          : supabase.auth.signInWithPassword({ email, password }),
+        15000,
+      );
 
       if (response.error) {
         throw new Error(response.error.message || "Authentication failed");
@@ -67,6 +96,9 @@ export function initAuthPanel() {
       passwordInput.value = "";
     } catch (error) {
       setStatus(error.message || "Login failed");
+    } finally {
+      authInFlight = false;
+      setAuthControlsDisabled(false);
     }
   }
 
@@ -84,13 +116,23 @@ export function initAuthPanel() {
   });
 
   logoutButton?.addEventListener("click", async () => {
+    if (authInFlight) return;
+    authInFlight = true;
+    setAuthControlsDisabled(true);
     setStatus("Working...");
-    const { error } = await supabase.auth.signOut();
-    if (!error) {
-      setStatus("Logged out");
-      return;
+    try {
+      const { error } = await withTimeout(supabase.auth.signOut(), 15000);
+      if (!error) {
+        setStatus("Logged out");
+        return;
+      }
+      setStatus(error.message || "Logout failed");
+    } catch (error) {
+      setStatus(error.message || "Logout failed");
+    } finally {
+      authInFlight = false;
+      setAuthControlsDisabled(false);
     }
-    setStatus(error.message || "Logout failed");
   });
 
   refreshCurrentUser().catch(() => setStatus("Not logged in"));
