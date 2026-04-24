@@ -91,8 +91,24 @@ export function initAuthPanel() {
         throw new Error(response.error.message || "Authentication failed");
       }
 
-      const userEmail = response.data.user?.email || email;
-      setStatus(`Logged in as ${userEmail}`);
+      const session = response.data?.session ?? null;
+      const user = response.data?.user ?? null;
+
+      if (action === "register") {
+        passwordInput.value = "";
+        if (!session) {
+          setStatus("Account created. Check your email to confirm before logging in.");
+          return;
+        }
+        setStatus(`Logged in as ${user?.email || email}`);
+        return;
+      }
+
+      if (!session || !user) {
+        throw new Error("Login did not create a session. Check email confirmation and try again.");
+      }
+
+      setStatus(`Logged in as ${user.email || email}`);
       passwordInput.value = "";
     } catch (error) {
       setStatus(error.message || "Login failed");
@@ -133,6 +149,10 @@ export function initAuthPanel() {
       authInFlight = false;
       setAuthControlsDisabled(false);
     }
+  });
+
+  supabase.auth.onAuthStateChange(async () => {
+    await refreshCurrentUser();
   });
 
   refreshCurrentUser().catch(() => setStatus("Not logged in"));
