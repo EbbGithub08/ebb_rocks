@@ -146,7 +146,7 @@ export function initAuthPanel() {
     setAuthControlsDisabled(true);
     setStatus("Working...");
     try {
-      const { error } = await withTimeout(supabase.auth.signOut(), 15000);
+      const { error } = await supabase.auth.signOut({ scope: "local" });
       if (!error) {
         setStatus("Logged out");
         return;

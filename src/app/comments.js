@@ -13,6 +13,20 @@ function formatTime(value) {
   return date.toLocaleString();
 }
 
+async function withTimeout(promise, timeoutMs, message) {
+  let timeoutId;
+  const timeoutPromise = new Promise((_, reject) => {
+    timeoutId = window.setTimeout(() => {
+      reject(new Error(message));
+    }, timeoutMs);
+  });
+  try {
+    return await Promise.race([promise, timeoutPromise]);
+  } finally {
+    window.clearTimeout(timeoutId);
+  }
+}
+
 export function initComments() {
   const list = document.querySelector("#comments-thread");
   const form = document.querySelector("[data-comments-form]");
@@ -109,12 +123,14 @@ export function initComments() {
 
   async function loadComments() {
     if (!supabase) return;
-    const { data, error } = await supabase
-      .from("comments")
-      .select("id, author_email, author_name, body, created_at")
-      .order("created_at", { ascending: true });
+    const { data, error } = await withTimeout(
+      supabase.from("comments").select("id, author_email, author_name, body, created_at").order("created_at", { ascending: true }),
+      12000,
+      "Comments request timed out. Please refresh and try again.",
+    );
     if (error) {
       setStatus(error.message || "Failed to load comments");
+      renderComments([]);
       return;
     }
     renderComments(data || []);
