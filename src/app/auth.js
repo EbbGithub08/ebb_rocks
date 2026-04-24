@@ -58,22 +58,19 @@ export function initAuthPanel() {
   }
 
   async function refreshCurrentUser() {
-    try {
-      const { data, error } = await withTimeout(supabase.auth.getSession(), 8000);
-      if (error) {
-        throw new Error(error.message || "Failed to read auth session");
-      }
-      const user = data?.session?.user ?? null;
-      setDbWarningVisible(false);
-      if (!user) {
-        setStatus("Not logged in");
-        return;
-      }
-      setStatus(`Logged in as ${user.email || "your account"}`);
-    } catch (error) {
-      setDbWarningVisible(true, "Auth service is not responding right now. Try again in a moment.");
-      setStatus(error.message || "Could not check login status");
+    const { data, error } = await supabase.auth.getSession();
+    if (error) {
+      setDbWarningVisible(true, error.message || "Could not contact auth service.");
+      setStatus("Not logged in");
+      return;
     }
+    const user = data?.session?.user ?? null;
+    setDbWarningVisible(false);
+    if (!user) {
+      setStatus("Not logged in");
+      return;
+    }
+    setStatus(`Logged in as ${user.email || "your account"}`);
   }
 
   async function handleAuth(action) {
@@ -142,13 +139,18 @@ export function initAuthPanel() {
 
   logoutButton?.addEventListener("click", async () => {
     if (authInFlight) return;
+    const { data: sessionData } = await supabase.auth.getSession();
+    if (!sessionData?.session?.user) {
+      setStatus("Not logged in");
+      return;
+    }
     authInFlight = true;
     setAuthControlsDisabled(true);
     setStatus("Working...");
     try {
       const { error } = await supabase.auth.signOut({ scope: "local" });
       if (!error) {
-        setStatus("Logged out");
+        setStatus("Not logged in");
         return;
       }
       setStatus(error.message || "Logout failed");

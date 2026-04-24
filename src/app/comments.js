@@ -131,17 +131,20 @@ export function initComments() {
 
   async function loadComments() {
     if (!supabase) return;
-    const { data, error } = await withTimeout(
-      supabase.from("comments").select("id, author_email, author_name, body, created_at").order("created_at", { ascending: true }),
-      12000,
-      "Comments request timed out. Please refresh and try again.",
-    );
-    if (error) {
+    try {
+      const { data, error } = await withTimeout(
+        supabase.from("comments").select("id, author_email, author_name, body, created_at").order("created_at", { ascending: true }),
+        12000,
+        "Comments request timed out. Please refresh and try again.",
+      );
+      if (error) {
+        setStatus(error.message || "Failed to load comments");
+        return;
+      }
+      renderComments(data || []);
+    } catch (error) {
       setStatus(error.message || "Failed to load comments");
-      renderComments([]);
-      return;
     }
-    renderComments(data || []);
   }
 
   async function refreshCurrentUser() {
@@ -187,10 +190,16 @@ export function initComments() {
 
   if (supabase) {
     supabase.auth.onAuthStateChange(async () => {
-      await refreshCurrentUser();
-      await loadComments();
+      try {
+        await refreshCurrentUser();
+        await loadComments();
+      } catch {
+        setStatus("Failed to refresh comments. Please try again.");
+      }
     });
   }
 
-  refreshCurrentUser().then(loadComments);
+  refreshCurrentUser()
+    .then(loadComments)
+    .catch(() => setStatus("Failed to initialize comments"));
 }
