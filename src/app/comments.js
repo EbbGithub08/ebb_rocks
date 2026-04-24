@@ -129,6 +129,14 @@ export function initComments() {
     }
   }
 
+  function renderCommentsError(message) {
+    list.textContent = "";
+    const errorItem = document.createElement("li");
+    errorItem.className = "comment-item comment-item--empty";
+    errorItem.textContent = message;
+    list.append(errorItem);
+  }
+
   async function loadComments() {
     if (!supabase) return;
     try {
@@ -138,12 +146,17 @@ export function initComments() {
         "Comments request timed out. Please refresh and try again.",
       );
       if (error) {
-        setStatus(error.message || "Failed to load comments");
+        const details = [error.message, error.code, error.details].filter(Boolean).join(" | ");
+        const message = details || "Failed to load comments";
+        setStatus(message);
+        renderCommentsError(message);
         return;
       }
       renderComments(data || []);
     } catch (error) {
-      setStatus(error.message || "Failed to load comments");
+      const message = error.message || "Failed to load comments";
+      setStatus(message);
+      renderCommentsError(message);
     }
   }
 
@@ -180,7 +193,8 @@ export function initComments() {
       body,
     });
     if (error) {
-      setStatus(error.message || "Failed to post comment.");
+      const details = [error.message, error.code, error.details].filter(Boolean).join(" | ");
+      setStatus(details || "Failed to post comment.");
       return;
     }
     commentInput.value = "";

@@ -138,10 +138,8 @@ export function initAuthPanel() {
   });
 
   logoutButton?.addEventListener("click", async () => {
-    if (authInFlight) return;
-    const { data: sessionData } = await supabase.auth.getSession();
-    if (!sessionData?.session?.user) {
-      setStatus("Not logged in");
+    if (authInFlight) {
+      setStatus("Please wait...");
       return;
     }
     authInFlight = true;
@@ -149,11 +147,11 @@ export function initAuthPanel() {
     setStatus("Working...");
     try {
       const { error } = await supabase.auth.signOut({ scope: "local" });
-      if (!error) {
+      if (error) {
+        setStatus(error.message || "Logout failed");
+      } else {
         setStatus("Not logged in");
-        return;
       }
-      setStatus(error.message || "Logout failed");
     } catch (error) {
       setStatus(error.message || "Logout failed");
     } finally {
