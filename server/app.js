@@ -1,5 +1,6 @@
 import express from "express";
 import cookieParser from "cookie-parser";
+import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
 import { apiRouter } from "./routes/api/index.js";
@@ -7,10 +8,34 @@ import { apiRouter } from "./routes/api/index.js";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const distDir = path.join(__dirname, "..", "dist");
 
+function parseCorsOrigins() {
+  return String(process.env.CORS_ORIGIN || "")
+    .split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean);
+}
+
 export function createApp() {
   const app = express();
+  const allowedOrigins = parseCorsOrigins();
 
   app.disable("x-powered-by");
+  app.use(
+    cors({
+      origin(origin, callback) {
+        if (!origin) {
+          callback(null, true);
+          return;
+        }
+        if (allowedOrigins.includes(origin)) {
+          callback(null, true);
+          return;
+        }
+        callback(new Error("Origin not allowed by CORS"));
+      },
+      credentials: true,
+    })
+  );
   app.use(express.json());
   app.use(cookieParser());
 

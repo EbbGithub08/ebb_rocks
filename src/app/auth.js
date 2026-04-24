@@ -1,25 +1,4 @@
-import { apiFetch } from "./api.js";
-
-async function parseJson(res) {
-  try {
-    return await res.json();
-  } catch {
-    return {};
-  }
-}
-
-async function postAuth(path, body) {
-  const res = await apiFetch(path, {
-    method: "POST",
-    credentials: "include",
-    body,
-  });
-  const payload = await parseJson(res);
-  if (!res.ok) {
-    throw new Error(payload.error || "Authentication request failed");
-  }
-  return payload;
-}
+import { supabase } from "./supabase.js";
 
 export function initAuthPanel() {
   const panel = document.querySelector("[data-auth-panel]");
@@ -42,49 +21,29 @@ export function initAuthPanel() {
     statusNode.textContent = message;
   }
 
-  function setDbWarningVisible(visible) {
+  function setDbWarningVisible(visible, message = "Login backend is unavailable right now.") {
     if (!dbWarningNode) return;
+    dbWarningNode.textContent = message;
     dbWarningNode.hidden = !visible;
   }
 
-  async function checkDatabaseHealth() {
-    try {
-      const res = await apiFetch("/api/db/health");
-      if (res.ok) {
-        setDbWarningVisible(false);
-        return true;
-      }
-      setDbWarningVisible(true);
-      return false;
-    } catch {
-      setDbWarningVisible(true);
-      return false;
-    }
+  if (!supabase) {
+    setDbWarningVisible(true, "Supabase is not configured. Add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.");
+    setStatus("Login is disabled");
+    return;
   }
 
   async function refreshCurrentUser() {
-    const dbOk = await checkDatabaseHealth();
-    if (!dbOk) {
-      setStatus("Database offline - login disabled");
-      return;
-    }
-
-    const res = await apiFetch("/api/auth/me", { credentials: "include" });
-    const payload = await parseJson(res);
-    if (!res.ok) {
+    setDbWarningVisible(false);
+    const { data, error } = await supabase.auth.getUser();
+    if (error || !data.user) {
       setStatus("Not logged in");
       return;
     }
-    setStatus(`Logged in as ${payload.user.email}`);
+    setStatus(`Logged in as ${data.user.email}`);
   }
 
   async function handleAuth(action) {
-    const dbOk = await checkDatabaseHealth();
-    if (!dbOk) {
-      setStatus("Cannot login while database is offline");
-      return;
-    }
-
     const email = emailInput.value.trim();
     const password = passwordInput.value;
     if (!email || !password) {
@@ -94,9 +53,17 @@ export function initAuthPanel() {
 
     setStatus("Working...");
     try {
-      const endpoint = action === "register" ? "/api/auth/register" : "/api/auth/login";
-      const payload = await postAuth(endpoint, { email, password });
-      setStatus(`Logged in as ${payload.user.email}`);
+      const response =
+        action === "register"
+          ? await supabase.auth.signUp({ email, password })
+          : await supabase.auth.signInWithPassword({ email, password });
+
+      if (response.error) {
+        throw new Error(response.error.message || "Authentication failed");
+      }
+
+      const userEmail = response.data.user?.email || email;
+      setStatus(`Logged in as ${userEmail}`);
       passwordInput.value = "";
     } catch (error) {
       setStatus(error.message || "Login failed");
@@ -118,16 +85,12 @@ export function initAuthPanel() {
 
   logoutButton?.addEventListener("click", async () => {
     setStatus("Working...");
-    const res = await apiFetch("/api/auth/logout", {
-      method: "POST",
-      credentials: "include",
-    });
-    if (res.ok) {
+    const { error } = await supabase.auth.signOut();
+    if (!error) {
       setStatus("Logged out");
       return;
     }
-    const payload = await parseJson(res);
-    setStatus(payload.error || "Logout failed");
+    setStatus(error.message || "Logout failed");
   });
 
   refreshCurrentUser().catch(() => setStatus("Not logged in"));
