@@ -141,7 +141,7 @@ export function initComments() {
     if (!supabase) return;
     try {
       const { data, error } = await withTimeout(
-        supabase.from("comments").select("id, author_email, author_name, body, created_at").order("created_at", { ascending: true }),
+        supabase.from("comments").select("id, author_email, author_name, body, created_at").order("created_at", { ascending: false }),
         12000,
         "Comments request timed out. Please refresh and try again.",
       );
