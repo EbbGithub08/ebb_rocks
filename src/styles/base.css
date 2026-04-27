@@ -7,6 +7,7 @@
 html {
   -webkit-text-size-adjust: 100%;
   background-color: var(--coloroceanloop);
+  overscroll-behavior-y: none;
 }
 
 body {
@@ -15,6 +16,7 @@ body {
   font: 1rem/1.5 var(--font-sans);
   color: var(--color-text);
   background-color: var(--coloroceanloop);
+  overscroll-behavior-y: none;
 }
 
 img,
