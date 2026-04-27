@@ -166,7 +166,13 @@ export function initComments() {
       syncComposerState();
       return;
     }
-    const { data } = await supabase.auth.getSession();
+    const { data, error } = await supabase.auth.getSession();
+    if (error) {
+      currentUser = null;
+      setStatus("Login to post a comment.");
+      syncComposerState();
+      return;
+    }
     currentUser = data?.session?.user ?? null;
     syncComposerState();
   }
@@ -214,6 +220,9 @@ export function initComments() {
   }
 
   refreshCurrentUser()
-    .then(loadComments)
-    .catch(() => setStatus("Failed to initialize comments"));
+    .then(() => loadComments())
+    .catch(async () => {
+      setStatus("Failed to initialize comments");
+      await loadComments();
+    });
 }

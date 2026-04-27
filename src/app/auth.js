@@ -149,7 +149,7 @@ export function initAuthPanel() {
         setStatus("Already logged out");
         return;
       }
-      const { error } = await withTimeout(supabase.auth.signOut({ scope: "local" }), 8000);
+      const { error } = await withTimeout(supabase.auth.signOut({ scope: "global" }), 8000);
       if (error) {
         setStatus(error.message || "Logout failed");
       } else {
@@ -167,16 +167,5 @@ export function initAuthPanel() {
     setDbWarningVisible(false);
     setStatus(user ? `Logged in as ${user.email || "your account"}` : "Not logged in");
   });
-
-  // Remove auto-login behavior: always start as logged out on page load.
-  beginAuthOperation();
   setStatus("Not logged in");
-  withTimeout(supabase.auth.signOut({ scope: "local" }), 8000)
-    .catch(() => {
-      setDbWarningVisible(true, "Could not clear previous session. Try refreshing.");
-      setStatus("Not logged in");
-    })
-    .finally(() => {
-      endAuthOperation();
-    });
 }
