@@ -36,7 +36,43 @@
           </div>
           <div class="site-hero__content intro-hero">
             <h1 class="visually-hidden">ebb.rocks</h1>
-            <img class="pda-showcase" src="/img/PDA2.png" alt="PDA" />
+            <div class="pda-shell">
+              <img class="pda-showcase" src="/img/PDA2.png" alt="PDA" />
+              <section class="pda-player" aria-label="PDA music player" data-pda-player>
+                <div class="pda-player__media">
+                  <img class="pda-player__cover" data-pda-cover alt="" />
+                </div>
+                <div class="pda-player__info">
+                  <p class="pda-player__title" data-pda-title></p>
+                  <p class="pda-player__times">
+                    <span data-pda-duration>--:--</span>
+                    <span aria-hidden="true">|</span>
+                    <span data-pda-remaining>--:--</span>
+                  </p>
+                  <div class="pda-player__controls">
+                    <button type="button" class="pda-player__toggle" data-pda-toggle aria-label="Play track">▶</button>
+                    <input
+                      class="pda-player__progress"
+                      data-pda-progress
+                      type="range"
+                      min="0"
+                      max="100"
+                      value="0"
+                      step="0.1"
+                      aria-label="Song progress"
+                    />
+                  </div>
+                </div>
+                <audio data-pda-audio preload="metadata"></audio>
+              </section>
+              <button
+                type="button"
+                class="pda-refresh-button"
+                data-pda-refresh
+                aria-label="Randomize song"
+                title="Randomize song"
+              ></button>
+            </div>
           </div>
         </section>
 
