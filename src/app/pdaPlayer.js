@@ -111,9 +111,9 @@ export function initPdaPlayer() {
     toggleButton.setAttribute("aria-label", isPlaying ? "Pause track" : "Play track");
   }
 
-  async function randomizeTrack() {
+  async function cycleTrack() {
     const wasPlaying = !audioNode.paused;
-    const nextIndex = getRandomTrackIndex(currentTrackIndex);
+    const nextIndex = (currentTrackIndex + 1) % pdaTracks.length;
     await loadTrack(nextIndex, { autoplay: wasPlaying });
   }
 
@@ -159,7 +159,7 @@ export function initPdaPlayer() {
     setButtonState();
     updateTimes();
   });
-  window.addEventListener("pda:randomize-track", randomizeTrack);
+  window.addEventListener("pda:randomize-track", cycleTrack);
 
   loadTrack(getRandomTrackIndex())
     .catch(() => {
