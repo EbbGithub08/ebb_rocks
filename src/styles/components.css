@@ -166,7 +166,8 @@
 }
 
 .pda-player__controls {
-  margin-top: 0.45rem;
+  margin-top: 0;
+  margin-bottom: 0.35rem;
   display: grid;
   grid-template-columns: auto 1fr;
   align-items: center;
@@ -216,6 +217,48 @@
 
 .pda-refresh-button:hover {
   background: rgb(120 195 255 / 0.2);
+}
+
+.social-links {
+  margin-top: 3.5rem;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.social-links__button {
+  width: clamp(2.8rem, 4vw, 3.4rem);
+  aspect-ratio: 1 / 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border: 1px solid rgb(180 226 255 / 0.55);
+  background: rgb(0 40 120 / 0.12);
+  backdrop-filter: blur(4px);
+  transition:
+    transform 0.15s ease,
+    background-color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.social-links__button:hover {
+  transform: translateY(-1px);
+  border-color: rgb(214 241 255 / 0.95);
+  background: rgb(105 193 255 / 0.2);
+}
+
+.social-links__button:focus-visible {
+  outline: 2px solid rgb(196 236 255);
+  outline-offset: 2px;
+}
+
+.social-links__button img {
+  width: 52%;
+  height: 52%;
+  display: block;
 }
 
 .scroll-nav {
