@@ -12,13 +12,14 @@
     <link rel="preload" href="/video/oceanloop.mp4" as="video" type="video/mp4" />
   </head>
   <body>
+    <a class="skip-link" href="#main">Skip to main content</a>
     <div id="loading" class="loading-overlay" aria-busy="true" aria-label="Loading video">
       <div class="loading-cog" aria-hidden="true">⚙</div>
       <p class="loading-text">Loading…</p>
     </div>
 
     <div id="app" class="layout">
-      <main id="main" class="site-main" role="main">
+      <main id="main" class="site-main" tabindex="-1">
         <section id="intro" class="site-hero" aria-label="Introduction">
           <div class="site-hero__media" aria-hidden="true">
             <video
@@ -34,6 +35,7 @@
             </video>
           </div>
           <div class="site-hero__content intro-hero">
+            <h1 class="visually-hidden">ebb.rocks</h1>
             <img class="pda-showcase" src="/img/PDA2.png" alt="PDA" />
           </div>
         </section>
@@ -59,8 +61,8 @@
             Login is unavailable right now because the auth service cannot be reached.
           </p>
           <div class="auth-panel" data-auth-panel>
-            <p class="auth-panel__status" data-auth-status>Checking login status...</p>
-            <form class="auth-panel__form" data-auth-form>
+            <p class="auth-panel__status" data-auth-status role="status" aria-live="polite">Checking login status...</p>
+            <form class="auth-panel__form" data-auth-form aria-label="Authentication form">
               <label class="auth-panel__field">
                 <span>Email</span>
                 <input type="email" name="email" autocomplete="email" required />
@@ -76,10 +78,11 @@
               </div>
             </form>
           </div>
-          <form class="comments-form" data-comments-form>
+          <form class="comments-form" data-comments-form aria-label="Add a new comment">
             <label class="comments-form__field">
               <span>Add a comment</span>
               <textarea
+                id="comment-body"
                 name="comment"
                 rows="4"
                 maxlength="2000"
@@ -90,12 +93,18 @@
             <div class="comments-form__actions">
               <button type="submit">Post comment</button>
             </div>
-            <p class="comments-form__status" data-comments-status>Login to post a comment.</p>
+            <p class="comments-form__status" data-comments-status role="status" aria-live="polite">Login to post a comment.</p>
           </form>
-          <ul class="comments-thread" id="comments-thread" aria-label="Comments list"></ul>
+          <ul class="comments-thread" id="comments-thread" aria-label="Comments list" aria-live="polite" aria-relevant="additions text"></ul>
         </section>
       </main>
     </div>
+    <nav class="scroll-nav" data-scroll-nav aria-label="Account quick actions">
+      <div class="scroll-nav__inner">
+        <p class="scroll-nav__user" data-scroll-user>Not logged in</p>
+        <button type="button" class="scroll-nav__logout" data-scroll-logout hidden>Logout</button>
+      </div>
+    </nav>
 
     <script type="module" src="/src/main.js"></script>
   </body>

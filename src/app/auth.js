@@ -5,16 +5,22 @@ export function initAuthPanel() {
   const form = document.querySelector("[data-auth-form]");
   const statusNode = document.querySelector("[data-auth-status]");
   const dbWarningNode = document.querySelector("[data-db-warning]");
+  const scrollNav = document.querySelector("[data-scroll-nav]");
+  const scrollUserNode = document.querySelector("[data-scroll-user]");
+  const scrollLogoutButton = document.querySelector("[data-scroll-logout]");
   if (!panel || !form || !statusNode) return;
 
   const emailInput = form.elements.namedItem("email");
   const passwordInput = form.elements.namedItem("password");
+  const emailField = emailInput instanceof HTMLInputElement ? emailInput.closest(".auth-panel__field") : null;
+  const passwordField = passwordInput instanceof HTMLInputElement ? passwordInput.closest(".auth-panel__field") : null;
   const loginButton = form.querySelector('[data-auth-action="login"]');
   const registerButton = form.querySelector('[data-auth-action="register"]');
   const logoutButton = form.querySelector('[data-auth-action="logout"]');
   const authButtons = [loginButton, registerButton, logoutButton].filter(
     (button) => button instanceof HTMLButtonElement,
   );
+  let currentUser = null;
   let authInFlight = false;
   let authLockTimerId = null;
 
@@ -26,9 +32,52 @@ export function initAuthPanel() {
     statusNode.textContent = message;
   }
 
+  function setScrollUserText(user) {
+    if (!(scrollUserNode instanceof HTMLElement)) return;
+    scrollUserNode.textContent = user?.email ? `Logged in: ${user.email}` : "Not logged in";
+  }
+
+  function syncAuthVisibility(user) {
+    currentUser = user ?? null;
+    const loggedIn = Boolean(user);
+    panel.hidden = loggedIn;
+    if (emailField instanceof HTMLElement) {
+      emailField.hidden = loggedIn;
+    }
+    if (passwordField instanceof HTMLElement) {
+      passwordField.hidden = loggedIn;
+    }
+    if (loginButton instanceof HTMLButtonElement) {
+      loginButton.hidden = loggedIn;
+    }
+    if (registerButton instanceof HTMLButtonElement) {
+      registerButton.hidden = loggedIn;
+    }
+    if (logoutButton instanceof HTMLButtonElement) {
+      logoutButton.hidden = !loggedIn;
+    }
+    if (scrollLogoutButton instanceof HTMLButtonElement) {
+      scrollLogoutButton.hidden = !loggedIn;
+    }
+    setScrollUserText(user);
+  }
+
   function setAuthControlsDisabled(disabled) {
     for (const button of authButtons) {
       button.disabled = disabled;
+    }
+    if (scrollLogoutButton instanceof HTMLButtonElement) {
+      scrollLogoutButton.disabled = disabled;
+    }
+  }
+
+  function syncScrollNavVisibility() {
+    if (!(scrollNav instanceof HTMLElement)) return;
+    const shouldShow = window.scrollY > 120;
+    scrollNav.classList.toggle("scroll-nav--visible", shouldShow);
+    scrollNav.setAttribute("aria-hidden", shouldShow ? "false" : "true");
+    if (scrollLogoutButton instanceof HTMLButtonElement) {
+      scrollLogoutButton.tabIndex = shouldShow && Boolean(currentUser) ? 0 : -1;
     }
   }
 
@@ -137,7 +186,7 @@ export function initAuthPanel() {
     await handleAuth("register");
   });
 
-  logoutButton?.addEventListener("click", async () => {
+  async function handleLogout() {
     if (authInFlight) {
       setStatus("Please wait...");
       return;
@@ -160,12 +209,28 @@ export function initAuthPanel() {
     } finally {
       endAuthOperation();
     }
-  });
+  }
+
+  logoutButton?.addEventListener("click", handleLogout);
+  scrollLogoutButton?.addEventListener("click", handleLogout);
+
+  window.addEventListener("scroll", syncScrollNavVisibility, { passive: true });
+  syncScrollNavVisibility();
 
   supabase.auth.onAuthStateChange((_event, session) => {
     const user = session?.user ?? null;
     setDbWarningVisible(false);
-    setStatus(user ? `Logged in as ${user.email || "your account"}` : "Not logged in");
+    syncAuthVisibility(user);
+    setStatus(user ? "" : "Not logged in");
   });
-  setStatus("Not logged in");
+
+  getCurrentUser()
+    .then((user) => {
+      syncAuthVisibility(user);
+      setStatus(user ? "" : "Not logged in");
+    })
+    .catch(() => {
+      syncAuthVisibility(null);
+      setStatus("Not logged in");
+    });
 }

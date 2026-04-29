@@ -78,6 +78,7 @@ export function initComments() {
       const empty = document.createElement("li");
       empty.className = "comment-item comment-item--empty";
       empty.textContent = "No comments yet.";
+      empty.tabIndex = 0;
       list.append(empty);
       return;
     }
@@ -85,6 +86,8 @@ export function initComments() {
     for (const item of items) {
       const li = document.createElement("li");
       li.className = "comment-item";
+      li.tabIndex = 0;
+      li.setAttribute("role", "article");
 
       const header = document.createElement("div");
       header.className = "comment-item__header";
@@ -92,11 +95,17 @@ export function initComments() {
       const name = document.createElement("p");
       name.className = "comment-item__name";
       name.textContent = item.author_name || displayNameFromEmail(item.author_email);
+      const nameId = `comment-author-${item.id}`;
+      name.id = nameId;
+      li.setAttribute("aria-labelledby", nameId);
       header.append(name);
 
-      const meta = document.createElement("p");
+      const meta = document.createElement("time");
       meta.className = "comment-item__meta";
       meta.textContent = formatTime(item.created_at);
+      if (item.created_at) {
+        meta.dateTime = item.created_at;
+      }
       header.append(meta);
 
       if (isAdmin(currentUser)) {
@@ -134,6 +143,7 @@ export function initComments() {
     const errorItem = document.createElement("li");
     errorItem.className = "comment-item comment-item--empty";
     errorItem.textContent = message;
+    errorItem.tabIndex = 0;
     list.append(errorItem);
   }
 
