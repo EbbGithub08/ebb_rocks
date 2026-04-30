@@ -1,13 +1,13 @@
-# PDA media files
+# pda mediafiler
 
-Drop your music player assets in these folders:
+Legg inn filer til musikkspilleren i disse mappene:
 
-- `public/media/tracks/` for audio files (`.mp3`, `.wav`, `.m4a`, etc.)
-- `public/media/covers/` for cover images (`.jpg`, `.png`, `.webp`)
+- `public/media/tracks/` for lydfiler (`.mp3`, `.wav`, `.m4a`, osv.)
+- `public/media/covers/` for coverbilder (`.jpg`, `.png`, `.webp`)
 
-Then map them in `src/app/pdaTracks.js`.
+Deretter mapper du dem i `src/app/pdaTracks.js`.
 
-Example:
+Eksempel:
 
 - audio: `/media/tracks/your-song.mp3`
 - cover: `/media/covers/your-song.jpg`
