@@ -315,14 +315,23 @@
 }
 
 @media (max-width: 40rem) {
+  /* Overlay box centered on the device glass (was shifted right via --pda-player-left ~34%). */
   .pda-shell {
-    gap: clamp(1.1rem, 4.5vw, 1.75rem);
+    gap: clamp(2rem, 9vw, 3.25rem);
     width: 100%;
-    --pda-player-top: 17.5%;
-    --pda-player-left: 33.5%;
-    --pda-player-width: 53%;
-    --pda-player-height: 38.5%;
-    --pda-refresh-left: 22.5%;
+    --pda-player-width: 52%;
+    --pda-player-left: 24%;
+    --pda-player-height: 40%;
+    --pda-player-top: 30%;
+    --pda-cover-width: 72%;
+    --pda-media-offset-x: 0%;
+    --pda-cover-offset-x: 0%;
+    --pda-text-offset-x: 0%;
+    --pda-text-offset-y: 0%;
+    --pda-toggle-offset-x: 0%;
+    --pda-toggle-offset-y: 0%;
+    --pda-refresh-top: 11%;
+    --pda-refresh-left: 23%;
     --pda-refresh-size: 5.5%;
   }
 
@@ -351,6 +360,21 @@
   .pda-player {
     padding: 0.55rem;
     gap: 0.35rem;
+    align-items: center;
+    justify-content: flex-start;
+    box-sizing: border-box;
+  }
+
+  .pda-player__media {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .pda-player__info {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
   }
 
   .pda-player__title {
@@ -359,10 +383,15 @@
 
   .pda-player__times {
     font-size: clamp(0.68rem, 3.2vw, 0.95rem);
+    margin-top: 0.15rem;
+    margin-bottom: 0;
   }
 
   .pda-player__controls {
     gap: 0.45rem;
+    transform: none;
+    width: 100%;
+    margin-inline: 0;
   }
 
   .social-links {

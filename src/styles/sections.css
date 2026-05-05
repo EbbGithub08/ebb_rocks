@@ -302,11 +302,11 @@
   }
 
   .content-section {
-    padding-block: var(--space-md);
+    padding-block: var(--space-sm);
   }
 
   .content-section--comments {
-    padding-top: var(--space-md);
+    padding-top: var(--space-sm);
   }
 
   #comments.content-section {
