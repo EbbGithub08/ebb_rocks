@@ -288,19 +288,32 @@
 
 @media (max-width: 40rem) {
   .site-hero {
-    padding-bottom: max(var(--space-lg), env(safe-area-inset-bottom, 0px));
+    min-height: 0;
+    align-items: flex-start;
+    overflow: visible;
+    padding-bottom: max(var(--space-sm), env(safe-area-inset-bottom, 0px));
   }
 
   .intro-hero {
     gap: var(--space-sm);
     padding-top: 0;
-    padding-bottom: var(--space-md);
+    padding-bottom: var(--space-sm);
+    width: 100%;
+  }
+
+  .content-section {
+    padding-block: var(--space-md);
+  }
+
+  .content-section--comments {
+    padding-top: var(--space-md);
   }
 
   #comments.content-section {
     transform: none;
     width: 100%;
     max-width: none;
+    min-height: 0;
     padding-inline-start: max(var(--space-md), env(safe-area-inset-left, 0px));
     padding-inline-end: max(var(--space-md), env(safe-area-inset-right, 0px));
   }

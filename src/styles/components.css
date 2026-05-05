@@ -28,7 +28,11 @@
 
 .pda-shell {
   position: relative;
-  display: inline-block;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-lg);
+  max-width: 100%;
   /* Manual PDA tuning controls (all percentages). */
   --pda-player-top: 18%;
   --pda-player-left: 35%;
@@ -44,6 +48,11 @@
   --pda-refresh-top: 10.5%;
   --pda-refresh-left: 23%;
   --pda-refresh-size: 5%;
+}
+
+.pda-shell__rotator {
+  position: relative;
+  display: inline-block;
 }
 
 .pda-player {
@@ -220,7 +229,7 @@
 }
 
 .social-links {
-  margin-top: 3.5rem;
+  margin-top: 0;
   display: flex;
   flex-wrap: nowrap;
   align-items: center;
@@ -306,18 +315,26 @@
 }
 
 @media (max-width: 40rem) {
-  .pda-showcase {
-    width: min(100%, 94vw);
-  }
-
   .pda-shell {
-    max-width: 100%;
+    gap: clamp(1.1rem, 4.5vw, 1.75rem);
+    width: 100%;
     --pda-player-top: 17.5%;
     --pda-player-left: 33.5%;
     --pda-player-width: 53%;
     --pda-player-height: 38.5%;
     --pda-refresh-left: 22.5%;
     --pda-refresh-size: 5.5%;
+  }
+
+  .pda-shell__rotator {
+    transform: rotate(90deg) scale(1.22);
+    transform-origin: center center;
+    margin-block: clamp(1.25rem, 11vmin, 3.75rem);
+  }
+
+  .pda-showcase {
+    width: min(100%, 96vw);
+    vertical-align: middle;
   }
 
   .pda-player {
@@ -341,7 +358,7 @@
     flex-wrap: wrap;
     row-gap: 0.65rem;
     column-gap: 0.75rem;
-    margin-top: clamp(1.2rem, 5vw, 2.4rem);
+    margin-top: 0;
     max-width: 100%;
     padding-inline: var(--space-xs);
     box-sizing: border-box;
