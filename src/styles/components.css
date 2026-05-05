@@ -332,6 +332,17 @@
     margin-block: clamp(1.25rem, 11vmin, 3.75rem);
   }
 
+  /* Frame rotates with parent; UI stays upright and centered on the screen area. */
+  .pda-shell__rotator .pda-player {
+    transform: rotate(-90deg);
+    transform-origin: center center;
+  }
+
+  .pda-shell__rotator .pda-refresh-button {
+    transform: rotate(-90deg);
+    transform-origin: center center;
+  }
+
   .pda-showcase {
     width: min(100%, 96vw);
     vertical-align: middle;
