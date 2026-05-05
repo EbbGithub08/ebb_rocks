@@ -1,5 +1,6 @@
 import { supabase } from "./supabase.js";
 
+// starter auth-panelet og kobler alt sammen
 export function initAuthPanel() {
   const panel = document.querySelector("[data-auth-panel]");
   const form = document.querySelector("[data-auth-form]");
@@ -28,15 +29,18 @@ export function initAuthPanel() {
     return;
   }
 
+  // viser en enkel statusmelding i ui
   function setStatus(message) {
     statusNode.textContent = message;
   }
 
+  // viser hvem som er logget inn i scroll-nav
   function setScrollUserText(user) {
     if (!(scrollUserNode instanceof HTMLElement)) return;
     scrollUserNode.textContent = user?.email ? `Logged in: ${user.email}` : "Not logged in";
   }
 
+  // viser eller skjuler felter og knapper ut fra login-status / KI generert
   function syncAuthVisibility(user) {
     currentUser = user ?? null;
     const loggedIn = Boolean(user);
@@ -62,6 +66,7 @@ export function initAuthPanel() {
     setScrollUserText(user);
   }
 
+  // skrur av eller på auth-knapper mens noe kjører / KI forslag
   function setAuthControlsDisabled(disabled) {
     for (const button of authButtons) {
       button.disabled = disabled;
@@ -71,6 +76,7 @@ export function initAuthPanel() {
     }
   }
 
+  // viser scroll-nav når siden er scrollet nok / KI generert
   function syncScrollNavVisibility() {
     if (!(scrollNav instanceof HTMLElement)) return;
     const shouldShow = window.scrollY > 120;
@@ -81,13 +87,14 @@ export function initAuthPanel() {
     }
   }
 
+  // starter en auth-operasjon og låser ui midlertidig
   function beginAuthOperation() {
     authInFlight = true;
     setAuthControlsDisabled(true);
     if (authLockTimerId !== null) {
       window.clearTimeout(authLockTimerId);
     }
-    // Prevent permanent UI lock if provider calls hang.
+    // KI forslag for å unngå permanent UI-låsning hvis provider kaller hang.
     authLockTimerId = window.setTimeout(() => {
       authInFlight = false;
       setAuthControlsDisabled(false);
@@ -96,6 +103,7 @@ export function initAuthPanel() {
     }, 20000);
   }
 
+  // avslutter auth-operasjon og åpner ui igjen
   function endAuthOperation() {
     authInFlight = false;
     setAuthControlsDisabled(false);
@@ -105,6 +113,7 @@ export function initAuthPanel() {
     }
   }
 
+  // kjører et kall med timeout så det ikke henger for lenge
   async function withTimeout(promise, timeoutMs) {
     let timeoutId;
     const timeoutPromise = new Promise((_, reject) => {
@@ -119,6 +128,7 @@ export function initAuthPanel() {
     }
   }
 
+  // viser eller skjuler advarsel om backend/auth
   function setDbWarningVisible(visible, message = "Login backend is unavailable right now.") {
     if (!dbWarningNode) return;
     dbWarningNode.textContent = message;
@@ -131,6 +141,7 @@ export function initAuthPanel() {
     return;
   }
 
+  // henter innlogget bruker fra nåværende sesjon
   async function getCurrentUser() {
     const { data, error } = await supabase.auth.getSession();
     if (error) {
@@ -139,6 +150,7 @@ export function initAuthPanel() {
     return data?.session?.user ?? null;
   }
 
+  // håndterer login eller registrering
   async function handleAuth(action) {
     if (authInFlight) return;
     const email = emailInput.value.trim();
@@ -186,6 +198,7 @@ export function initAuthPanel() {
     await handleAuth("register");
   });
 
+  // logger ut brukeren
   async function handleLogout() {
     if (authInFlight) {
       setStatus("Please wait...");
