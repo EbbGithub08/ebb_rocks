@@ -317,7 +317,7 @@
 @media (max-width: 40rem) {
   /* Overlay box centered on the device glass (was shifted right via --pda-player-left ~34%). */
   .pda-shell {
-    gap: clamp(2rem, 9vw, 3.25rem);
+    gap: clamp(2.35rem, 10vw, 3.5rem);
     width: 100%;
     --pda-player-width: 52%;
     --pda-player-left: 21%;
@@ -398,7 +398,7 @@
     flex-wrap: wrap;
     row-gap: 0.65rem;
     column-gap: 0.75rem;
-    margin-top: 10;
+    margin-top: 0.5rem;
     max-width: 100%;
     padding-inline: var(--space-xs);
     box-sizing: border-box;
