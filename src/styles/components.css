@@ -320,9 +320,9 @@
     gap: clamp(2rem, 9vw, 3.25rem);
     width: 100%;
     --pda-player-width: 52%;
-    --pda-player-left: 24%;
+    --pda-player-left: 21%;
     --pda-player-height: 40%;
-    --pda-player-top: 25%;
+    --pda-player-top: 30%;
     --pda-cover-width: 72%;
     --pda-media-offset-x: 0%;
     --pda-cover-offset-x: 0%;
