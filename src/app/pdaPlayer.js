@@ -1,5 +1,6 @@
 import { pdaTracks } from "./pdaTracks.js";
 
+// formatterer sekunder -> mm:ss (fallback når vi ikke har metadata ennå)
 function formatTime(seconds) {
   if (!Number.isFinite(seconds) || seconds < 0) return "--:--";
   const whole = Math.floor(seconds);
@@ -8,12 +9,14 @@ function formatTime(seconds) {
   return `${mins}:${secs.toString().padStart(2, "0")}`;
 }
 
+// “fyller” range-progress via css custom prop (for fancy progress bar)
 function paintRangeProgress(rangeInput, percent) {
   if (!(rangeInput instanceof HTMLInputElement)) return;
   const clamped = Math.max(0, Math.min(100, percent));
   rangeInput.style.setProperty("--range-progress", `${clamped}%`);
 }
 
+// bytter ikon mellom play/pause (svg markup)
 function getToggleIconSvg(isPlaying) {
   if (isPlaying) {
     return `
@@ -30,6 +33,7 @@ function getToggleIconSvg(isPlaying) {
   `;
 }
 
+// starter PDA-playeren og kobler UI <-> audio element
 export function initPdaPlayer() {
   const playerRoot = document.querySelector("[data-pda-player]");
   if (!(playerRoot instanceof HTMLElement)) return;
@@ -58,6 +62,7 @@ export function initPdaPlayer() {
   audioNode.volume = 0.55;
   let currentTrackIndex = -1;
 
+  // plukker en random track, men kan ekskludere forrige
   function getRandomTrackIndex(excludeIndex = -1) {
     if (pdaTracks.length <= 1) return 0;
     let nextIndex = excludeIndex;
@@ -67,6 +72,7 @@ export function initPdaPlayer() {
     return nextIndex;
   }
 
+  // laster inn track i UI og audio (autoplay hvis vi allerede spilte)
   async function loadTrack(index, { autoplay = false } = {}) {
     const track = pdaTracks[index];
     if (!track) return;
@@ -90,6 +96,7 @@ export function initPdaPlayer() {
     }
   }
 
+  // synker tider + progress bar med audio state
   function updateTimes() {
     const duration = audioNode.duration;
     const current = audioNode.currentTime;
@@ -105,18 +112,21 @@ export function initPdaPlayer() {
     }
   }
 
+  // oppdater play/pause knapp (ikon + aria label)
   function setButtonState() {
     const isPlaying = !audioNode.paused;
     toggleButton.innerHTML = getToggleIconSvg(isPlaying);
     toggleButton.setAttribute("aria-label", isPlaying ? "Pause track" : "Play track");
   }
 
+  // neste track i lista (brukes av refresh-button / end)
   async function cycleTrack() {
     const wasPlaying = !audioNode.paused;
     const nextIndex = (currentTrackIndex + 1) % pdaTracks.length;
     await loadTrack(nextIndex, { autoplay: wasPlaying });
   }
 
+  // play/pause
   toggleButton.addEventListener("click", async () => {
     try {
       if (audioNode.paused) {
@@ -130,6 +140,7 @@ export function initPdaPlayer() {
     setButtonState();
   });
 
+  // scrub via slider
   progressNode.addEventListener("input", () => {
     const duration = audioNode.duration;
     if (!Number.isFinite(duration) || duration <= 0) return;
@@ -139,6 +150,7 @@ export function initPdaPlayer() {
     updateTimes();
   });
 
+  // keyboard-scrub (10 sek) for accessibility
   progressNode.addEventListener("keydown", (event) => {
     if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
     const duration = audioNode.duration;
@@ -150,6 +162,7 @@ export function initPdaPlayer() {
     updateTimes();
   });
 
+  // lytter på audio events for UI sync
   audioNode.addEventListener("loadedmetadata", updateTimes);
   audioNode.addEventListener("timeupdate", updateTimes);
   audioNode.addEventListener("play", setButtonState);
@@ -161,6 +174,7 @@ export function initPdaPlayer() {
   });
   window.addEventListener("pda:randomize-track", cycleTrack);
 
+  // init: last random track og gjør knappen riktig
   loadTrack(getRandomTrackIndex())
     .catch(() => {
       // Keep player responsive even if the chosen file fails.

@@ -1,22 +1,27 @@
 import { supabase } from "./supabase.js";
 
+// epost som får admin-rettigheter (kan slette kommentarer)
 const ADMIN_EMAIL = "ebbe.gaston.zelow@gmail.com";
 
+// normaliserer epost så sammenligning blir stabil (case/whitespace)
 function normalizeEmail(value) {
   return (value || "").trim().toLowerCase();
 }
 
+// fallback displaynavn hvis navn ikke finnes i db
 function displayNameFromEmail(email) {
   if (!email) return "Unknown user";
   return email.split("@")[0];
 }
 
+// formatterer tidspunkt til noe lesbart
 function formatTime(value) {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return "";
   return date.toLocaleString();
 }
 
+// kjører et async kall med timeout så UI ikke henger
 async function withTimeout(promise, timeoutMs, message) {
   let timeoutId;
   const timeoutPromise = new Promise((_, reject) => {
@@ -31,6 +36,7 @@ async function withTimeout(promise, timeoutMs, message) {
   }
 }
 
+// starter comments-seksjonen: last inn + post + admin delete
 export function initComments() {
   const list = document.querySelector("#comments-thread");
   const form = document.querySelector("[data-comments-form]");
@@ -42,18 +48,22 @@ export function initComments() {
 
   let currentUser = null;
 
+  // viser status under kommentarboksen
   function setStatus(message) {
     status.textContent = message;
   }
 
+  // sjekker om brukeren er admin
   function isAdmin(user) {
     return normalizeEmail(user?.email) === normalizeEmail(ADMIN_EMAIL);
   }
 
+  // kan vi poste? (må være innlogget og supabase må finnes)
   function canPost() {
     return Boolean(supabase && currentUser);
   }
 
+  // aktiver/deaktiver textarea + submit etter login-status
   function syncComposerState() {
     const enabled = canPost();
     commentInput.disabled = !enabled;
@@ -72,6 +82,7 @@ export function initComments() {
     setStatus("Ready to post.");
   }
 
+  // renderer en liste med kommentarer i UI
   function renderComments(items) {
     list.textContent = "";
     if (!items.length) {
@@ -138,6 +149,7 @@ export function initComments() {
     }
   }
 
+  // fallback UI hvis vi ikke får lastet kommentarer
   function renderCommentsError(message) {
     list.textContent = "";
     const errorItem = document.createElement("li");
@@ -147,6 +159,7 @@ export function initComments() {
     list.append(errorItem);
   }
 
+  // henter kommentarer fra supabase (nyeste først)
   async function loadComments() {
     if (!supabase) return;
     try {
@@ -170,6 +183,7 @@ export function initComments() {
     }
   }
 
+  // oppdaterer currentUser fra auth-session og synker UI
   async function refreshCurrentUser() {
     if (!supabase) {
       currentUser = null;
@@ -187,6 +201,7 @@ export function initComments() {
     syncComposerState();
   }
 
+  // håndter posting av ny kommentar
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
     if (!supabase || !currentUser) {
@@ -218,6 +233,7 @@ export function initComments() {
     await loadComments();
   });
 
+  // oppdater comments når auth-status endrer seg (login/logout)
   if (supabase) {
     supabase.auth.onAuthStateChange(async () => {
       try {
@@ -229,6 +245,7 @@ export function initComments() {
     });
   }
 
+  // init: hent bruker og comments første gang
   refreshCurrentUser()
     .then(() => loadComments())
     .catch(async () => {

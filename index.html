@@ -13,6 +13,7 @@
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to main content</a>
+    <!-- loading overlay mens video-buffering skjer -->
     <div id="loading" class="loading-overlay" aria-busy="true" aria-label="Loading video">
       <div class="loading-cog" aria-hidden="true">⚙</div>
       <p class="loading-text">Loading…</p>
@@ -20,8 +21,10 @@
 
     <div id="app" class="layout">
       <main id="main" class="site-main" tabindex="-1">
+        <!-- hero: bakgrunnsvideo + PDA-player (alt scroller bort som én blokk) -->
         <section id="intro" class="site-hero" aria-label="Introduction">
           <div class="site-hero__media" aria-hidden="true">
+            <!-- bakgrunnsvideo (muted + playsinline for mobile) -->
             <video
               id="bg-video"
               class="site-hero__video"
@@ -36,9 +39,11 @@
           </div>
           <div class="site-hero__content intro-hero">
             <h1 class="visually-hidden">ebb.rocks</h1>
+            <!-- PDA-boks (bilde + overlay UI + refresh knapp) -->
             <div class="pda-shell">
               <div class="pda-shell__rotator">
                 <img class="pda-showcase" src="/img/PDA2.png" alt="PDA" />
+                <!-- overlay player UI (cover + play + progress + tid) -->
                 <section class="pda-player" aria-label="PDA music player" data-pda-player>
                   <div class="pda-player__media">
                     <img class="pda-player__cover" data-pda-cover alt="" />
@@ -74,6 +79,7 @@
                   title="Next song"
                 ></button>
               </div>
+              <!-- sosial-lenker under PDA -->
               <nav class="social-links" aria-label="Social links">
                 <a
                   class="social-links__button"
@@ -130,6 +136,7 @@
           </div>
         </section>
 
+        <!-- comments: auth panel + composer + liste -->
         <section
           class="content-section content-section--comments comments-section"
           id="comments"
@@ -181,6 +188,7 @@
         </section>
       </main>
     </div>
+    <!-- flytende nav som dukker opp når du scroller -->
     <nav class="scroll-nav" data-scroll-nav aria-label="Account quick actions">
       <div class="scroll-nav__inner">
         <p class="scroll-nav__user" data-scroll-user>Not logged in</p>
@@ -188,6 +196,7 @@
       </div>
     </nav>
 
+    <!-- app entry -->
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>

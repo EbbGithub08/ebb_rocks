@@ -5,6 +5,7 @@ import { initComments } from "./app/comments.js";
 import { initPdaRefreshButton } from "./app/pdaButton.js";
 import { initPdaPlayer } from "./app/pdaPlayer.js";
 
+// starter alle moduler for forsiden
 initBackgroundVideo();
 initAuthPanel();
 initComments();

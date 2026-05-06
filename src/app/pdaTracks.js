@@ -1,11 +1,5 @@
+// lista over spor PDA-playeren kan spille
 export const pdaTracks = [
-  {
-    id: "dracula",
-    title: "Dracula",
-    artist: "",
-    audioSrc: "/media/tracks/Dracula.mp3",
-    coverSrc: "/media/covers/Dracula.jpeg",
-  },
   {
     id: "inmyroom",
     title: "In My Room",
@@ -22,6 +16,7 @@ export const pdaTracks = [
   },
 ];
 
+// helper for å slå opp track fra id (brukes hvis vi senere lagrer “current track”)
 export function getTrackById(trackId) {
   return pdaTracks.find((track) => track.id === trackId) ?? null;
 }
