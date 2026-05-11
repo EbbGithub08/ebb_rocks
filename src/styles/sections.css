@@ -269,6 +269,21 @@
   border-radius: 0.7rem;
   background: rgb(7 22 84 / 0.68);
   color: inherit;
+  -webkit-text-fill-color: currentcolor;
+}
+
+.auth-panel__field > input:-webkit-autofill,
+.auth-panel__field > input:-webkit-autofill:hover,
+.auth-panel__field > input:-webkit-autofill:focus,
+.comments-form__field textarea:-webkit-autofill,
+.comments-form__field textarea:-webkit-autofill:hover,
+.comments-form__field textarea:-webkit-autofill:focus {
+  -webkit-text-fill-color: currentcolor;
+  transition: background-color 9999s ease-out 0s;
+}
+
+.comments-form__field textarea {
+  -webkit-text-fill-color: currentcolor;
 }
 
 .auth-panel__actions {
