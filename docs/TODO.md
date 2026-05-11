@@ -4,4 +4,5 @@
 - [ ] Legge til flere sanger
 - [ ] En footer til nettsiden
 - [ ] Profilbilder i Comment Section
+- [ ] Sletting Av Egen Bruker
 
