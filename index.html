@@ -70,7 +70,6 @@
                       <span data-pda-remaining>--:--</span>
                     </p>
                   </div>
-                  <audio data-pda-audio preload="metadata"></audio>
                 </section>
                 <button
                   type="button"
@@ -169,8 +168,8 @@
             </form>
           </div>
           <form class="comments-form" data-comments-form aria-label="Add a new comment">
-            <label class="comments-form__field">
-              <span>Add a comment</span>
+            <div class="comments-form__field">
+              <label for="comment-body">Add a comment</label>
               <textarea
                 id="comment-body"
                 name="comment"
@@ -179,7 +178,7 @@
                 placeholder="Write your message here..."
                 required
               ></textarea>
-            </label>
+            </div>
             <div class="comments-form__actions">
               <button type="submit">Post comment</button>
             </div>

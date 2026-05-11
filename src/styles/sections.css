@@ -134,7 +134,7 @@
   gap: 0.35rem;
 }
 
-.comments-form__field > span {
+.comments-form__field > label {
   font-size: 0.875rem;
 }
 

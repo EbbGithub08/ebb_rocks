@@ -44,8 +44,9 @@ export function initPdaPlayer() {
   const remainingNode = playerRoot.querySelector("[data-pda-remaining]");
   const progressNode = playerRoot.querySelector("[data-pda-progress]");
   const toggleButton = playerRoot.querySelector("[data-pda-toggle]");
-  const audioNode = playerRoot.querySelector("[data-pda-audio]");
   if (pdaTracks.length === 0) return;
+  const audioNode = new Audio();
+  audioNode.preload = "metadata";
 
   if (
     !(coverNode instanceof HTMLImageElement) ||
@@ -53,8 +54,7 @@ export function initPdaPlayer() {
     !(durationNode instanceof HTMLElement) ||
     !(remainingNode instanceof HTMLElement) ||
     !(progressNode instanceof HTMLInputElement) ||
-    !(toggleButton instanceof HTMLButtonElement) ||
-    !(audioNode instanceof HTMLAudioElement)
+    !(toggleButton instanceof HTMLButtonElement)
   ) {
     return;
   }
